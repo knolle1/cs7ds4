@@ -56,31 +56,100 @@ df_bikes = pd.read_csv("./data/dublinbikes_data_agg-date.csv")
 df_bikes['date'] = df_bikes['date'].astype('datetime64[ns]')
 df_bikes['pandemic'] = df_bikes['pandemic'].astype('string')
 df_bikes['average_bike_usage'] = df_bikes['average_bike_usage'].astype('float')
+df_bikes['std_bike_usage'] = df_bikes['std_bike_usage'].astype('float')
 
 
 #  Plot average bike usage over time
 # -----------------------------------
 
-fig.add_trace(go.Scatter(x=df_bikes[df_bikes["pandemic"] == "pre-pandemic"]["date"], 
-                         y=df_bikes[df_bikes["pandemic"] == "pre-pandemic"]["average_bike_usage"], 
+df = df_bikes[df_bikes["pandemic"] == "pre-pandemic"]
+fig.add_trace(go.Scatter(x=df["date"], 
+                         y=df["average_bike_usage"], 
                          mode='lines', 
                          line=dict(color = BLUE),
                          name='Pre-pandemic',
+                         hoverinfo='text+name',
+                         text = ("Date: " + df['date'].dt.strftime('%Y-%m-%d') + 
+                                 "<br>Average bike usage: " + df['average_bike_usage'].round(2).astype('string') + ' %' +
+                                 "<br>Std. dev.: " + df['std_bike_usage'].round(2).astype('string') + ' %'),
                          showlegend=True),
               row=1, col=1)
-fig.add_trace(go.Scatter(x=df_bikes[df_bikes["pandemic"] == "pandemic"]["date"], 
-                         y=df_bikes[df_bikes["pandemic"] == "pandemic"]["average_bike_usage"], 
+fig.add_trace(go.Scatter(x=df["date"], 
+                         y=df["average_bike_usage"]+df["std_bike_usage"], 
+                         mode='lines', 
+                         line=dict(color = BLUE, width=0),
+                         name='Pre-pandemic',
+                         hoverinfo='skip',
+                         showlegend=False),
+              row=1, col=1)
+fig.add_trace(go.Scatter(x=df["date"], 
+                         y=df["average_bike_usage"]-df["std_bike_usage"], 
+                         mode='lines', 
+                         line=dict(color = BLUE, width=0),
+                         fill='tonexty',
+                         name='Pre-pandemic',
+                         hoverinfo='skip',
+                         showlegend=False),
+              row=1, col=1)
+
+df = df_bikes[df_bikes["pandemic"] == "pandemic"]
+fig.add_trace(go.Scatter(x=df["date"], 
+                         y=df["average_bike_usage"], 
                          mode='lines', 
                          line=dict(color = RED),
                          name='Pandemic',
+                         hoverinfo='text+name',
+                         text = ("Date: " + df['date'].dt.strftime('%Y-%m-%d') + 
+                                 "<br>Average bike usage: " + df['average_bike_usage'].round(2).astype('string') + ' %' +
+                                 "<br>Std. dev.: " + df['std_bike_usage'].round(2).astype('string') + ' %'),
                          showlegend=True),
               row=1, col=1)
-fig.add_trace(go.Scatter(x=df_bikes[df_bikes["pandemic"] == "post-pandemic"]["date"], 
-                         y=df_bikes[df_bikes["pandemic"] == "post-pandemic"]["average_bike_usage"], 
+fig.add_trace(go.Scatter(x=df["date"], 
+                         y=df["average_bike_usage"]+df["std_bike_usage"], 
+                         mode='lines', 
+                         line=dict(color = RED, width=0),
+                         name='Pre-pandemic',
+                         hoverinfo='skip',
+                         showlegend=False),
+              row=1, col=1)
+fig.add_trace(go.Scatter(x=df["date"], 
+                         y=df["average_bike_usage"]-df["std_bike_usage"], 
+                         mode='lines', 
+                         line=dict(color = RED, width=0),
+                         fill='tonexty',
+                         name='Pre-pandemic',
+                         hoverinfo='skip',
+                         showlegend=False),
+              row=1, col=1)
+
+df = df_bikes[df_bikes["pandemic"] == "post-pandemic"]
+fig.add_trace(go.Scatter(x=df["date"], 
+                         y=df["average_bike_usage"], 
                          mode='lines', 
                          line=dict(color = GREEN),
                          name='Post-pandemic',
+                         hoverinfo='text+name',
+                         text = ("Date: " + df['date'].dt.strftime('%Y-%m-%d') + 
+                                 "<br>Average bike usage: " + df['average_bike_usage'].round(2).astype('string') + ' %' +
+                                 "<br>Std. dev.: " + df['std_bike_usage'].round(2).astype('string') + ' %'),
                          showlegend=True),
+              row=1, col=1)
+fig.add_trace(go.Scatter(x=df["date"], 
+                         y=df["average_bike_usage"]+df["std_bike_usage"], 
+                         mode='lines', 
+                         line=dict(color = GREEN, width=0),
+                         name='Pre-pandemic',
+                         hoverinfo='skip',
+                         showlegend=False),
+              row=1, col=1)
+fig.add_trace(go.Scatter(x=df["date"], 
+                         y=df["average_bike_usage"]-df["std_bike_usage"], 
+                         mode='lines', 
+                         line=dict(color = GREEN, width=0),
+                         fill='tonexty',
+                         name='Pre-pandemic',
+                         hoverinfo='skip',
+                         showlegend=False),
               row=1, col=1)
 
 
@@ -98,7 +167,9 @@ fig.add_trace(go.Scatter(x=df_temp["date"],
                          y=df_temp["mint"], 
                          mode='lines', 
                          line=dict(color = 'darkslateblue'),
-                         name='Min. temperature',
+                         hoverinfo='text',
+                         text = ("Date: " + df_temp['date'].dt.strftime('%Y-%m-%d') + 
+                                 "<br>Min. temperature: " + df_temp["mint"].astype('string') + "°C"),
                          showlegend=False),
               row=2, col=1)
 
@@ -106,7 +177,9 @@ fig.add_trace(go.Scatter(x=df_temp["date"],
                          y=df_temp["maxt"], 
                          mode='lines', 
                          line=dict(color = 'darkslateblue'),
-                         name='Max. temperature',
+                         hoverinfo='text',
+                         text = ("Date: " + df_temp['date'].dt.strftime('%Y-%m-%d') + 
+                                 "<br>Max. temperature: " + df_temp["maxt"].astype('string') + "°C"),
                          fill='tonexty',
                          showlegend=False),
               row=2, col=1)
@@ -115,7 +188,9 @@ fig.add_trace(go.Scatter(x=df_temp["date"],
                          y=df_temp["rain"], 
                          mode='lines', 
                          line=dict(color = 'darkslateblue'),
-                         name='Rainfall',
+                         hoverinfo='text',
+                         text = ("Date: " + df_temp['date'].dt.strftime('%Y-%m-%d') + 
+                                 "<br>Rainfall: " + df_temp["rain"].astype('string') + "mm"),
                          showlegend=False),
               row=3, col=1)
 
@@ -344,7 +419,7 @@ updatemenus = list([
          buttons=list([   
             dict(label = 'Daily trends',
                  method = 'update',
-                 args = [{'visible': [True]*9+[True]*3+[False]*3+[False]*3+[False]*3},
+                 args = [{'visible': [True]*15+[True]*3+[False]*3+[False]*3+[False]*3},
                          {'xaxis2.tickformat':'%H:%S',
                           'xaxis4.tickformat':'%H:%S',
                           'xaxis6.tickformat':'%H:%S',
@@ -352,7 +427,7 @@ updatemenus = list([
                          ]),
             dict(label = 'Weekly trends',
                  method = 'update',
-                 args = [{'visible': [True]*9+[False]*3+[True]*3+[False]*3+[False]*3},
+                 args = [{'visible': [True]*15+[False]*3+[True]*3+[False]*3+[False]*3},
                          {'xaxis2.tickformat':'%a',
                           'xaxis4.tickformat':'%a',
                           'xaxis6.tickformat':'%a',
@@ -360,7 +435,7 @@ updatemenus = list([
                          ]),
             dict(label = 'Monthly trends',
                  method = 'update',
-                 args = [{'visible': [True]*9+[False]*3+[False]*3+[True]*3+[False]*3},
+                 args = [{'visible': [True]*15+[False]*3+[False]*3+[True]*3+[False]*3},
                          {'xaxis2.tickformat':'%d',
                           'xaxis4.tickformat':'%d',
                           'xaxis6.tickformat':'%d',
@@ -368,7 +443,7 @@ updatemenus = list([
                          ]),
             dict(label = 'Annual trends',
                  method = 'update',
-                 args = [{'visible': [True]*9+[False]*3+[False]*3+[False]*3+[True]*3},
+                 args = [{'visible': [True]*15+[False]*3+[False]*3+[False]*3+[True]*3},
                          {'xaxis2.tickformat':'%b',
                           'xaxis4.tickformat':'%b',
                           'xaxis6.tickformat':'%b',
