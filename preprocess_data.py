@@ -73,8 +73,8 @@ df_bikes['date'] = df_bikes["timestamp"].dt.date.astype('datetime64[ns]')
 
 # Aggregate by date for comparison with temperature data
 df_agg = df_bikes[["date", "pandemic", "bike_usage"]]
-df_agg = df_agg.groupby(["date", "pandemic"]).agg(['mean','sem']).reset_index()
-df_agg.columns = ["date", "pandemic", 'average_bike_usage','sem_bike_usage']
+df_agg = df_agg.groupby(["date", "pandemic"]).agg(['mean', 'std', 'sem']).reset_index()
+df_agg.columns = ["date", "pandemic", 'average_bike_usage', 'std_bike_usage', 'sem_bike_usage']
 df_agg["day_of_week"] = pd.to_datetime({'year':1970, 'month':1, 'day':5+df_agg['date'].dt.dayofweek}) # 01-01-1970 was a Thursday so the first Monday was on the 5th
 df_agg["day"] = pd.to_datetime({'year':1970, 'month':1, 'day':df_agg['date'].dt.day})
 df_agg["month"] = pd.to_datetime({'year':1970, 'month':df_agg['date'].dt.month, 'day':1})
@@ -82,14 +82,14 @@ df_agg.to_csv("./data/dublinbikes_data_agg-date.csv")
 
 # Aggregate by station and time period to plot on map
 df_agg = df_bikes[["station", "lat", "lon", "pandemic", "bike_usage"]]
-df_agg = df_agg.groupby(["station", "lat", "lon", "pandemic"]).agg(['mean','sem']).reset_index()
-df_agg.columns = ["station", "lat", "lon", "pandemic", 'average_bike_usage','sem_bike_usage']
+df_agg = df_agg.groupby(["station", "lat", "lon", "pandemic"]).agg(['mean', 'std', 'sem']).reset_index()
+df_agg.columns = ["station", "lat", "lon", "pandemic", 'average_bike_usage', 'std_bike_usage','sem_bike_usage']
 df_agg.to_csv("./data/dublinbikes_data_agg-station.csv")
 
 # Aggregate by station and hour for daily trends
 df_agg = df_bikes[["date", "timestamp", "pandemic", "bike_usage"]]
 df_agg["hour"] = pd.to_datetime({'year':1970, 'month':1, 'day':1, 'hour':df_bikes['timestamp'].dt.hour})
 df_agg = df_agg.drop(columns=["timestamp"])
-df_agg = df_agg.groupby(["date", "hour", "pandemic"]).agg(['mean','sem']).reset_index()
-df_agg.columns = ["date", "hour", "pandemic", 'average_bike_usage','sem_bike_usage']
+df_agg = df_agg.groupby(["date", "hour", "pandemic"]).agg(['mean', 'std', 'sem']).reset_index()
+df_agg.columns = ["date", "hour", "pandemic", 'average_bike_usage', 'std_bike_usage','sem_bike_usage']
 df_agg.to_csv("./data/dublinbikes_data_agg-hour.csv")
